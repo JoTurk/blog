@@ -1,0 +1,15 @@
+:root {
+	color-scheme: dark;
+	--bg: #1c181b;
+	--text: #f3e8ee;
+	--muted: #b3a2ac;
+	--rule: #4a3a44;
+	--accent: #ff9cc4;
+	--bubble: #3d2632;
+	--bubbletext: #ffc0d8;
+	--code: #26202a;
+}
+
+body {
+	background: var(--bg);
+}
