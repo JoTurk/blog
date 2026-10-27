@@ -8,8 +8,366 @@
 	--bubble: #3d2632;
 	--bubbletext: #ffc0d8;
 	--code: #26202a;
+	--info: #a9b8ff;
+	--tip: #8fdcb4;
+	--warning: #f2c879;
+	--danger: #ff8a8a;
+
+	--code-block-bg: #232136;
+	--code-block-text: #e0def4;
+	--code-block-muted: #908caa;
+	--code-block-highlight: #817c9c26;
+
+	--font-sans:
+		ui-rounded, "SF Pro Rounded", system-ui, -apple-system, sans-serif;
+	--font-mono: ui-monospace, Menlo, Consolas, monospace;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
 }
 
 body {
+	margin: 0;
 	background: var(--bg);
+	color: var(--text);
+	font-family: var(--font-sans);
+	font-size: 1.0625rem;
+	line-height: 1.7;
+	overflow-wrap: break-word;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Text */
+
+h1,
+h2,
+h3,
+h4 {
+	font-weight: 700;
+}
+
+h1 {
+	margin: 0 0 20px;
+	font-size: 2rem;
+	line-height: 1.25;
+}
+
+h2 {
+	margin: 40px 0 20px;
+	font-size: 1.375rem;
+	line-height: 1.35;
+}
+
+h3 {
+	margin: 32px 0 16px;
+	font-size: 1.125rem;
+	line-height: 1.4;
+}
+
+p,
+ul,
+ol,
+pre,
+blockquote,
+figure,
+table {
+	margin: 0 0 20px;
+}
+
+ul,
+ol {
+	padding-left: 1.4em;
+}
+
+li + li {
+	margin-top: 4px;
+}
+
+b,
+strong {
+	font-weight: 700;
+}
+
+small {
+	font-size: 0.875rem;
+}
+
+hr {
+	margin: 40px 0;
+	border: 0;
+	border-top: 2px dotted var(--rule);
+}
+
+mark {
+	padding: 0 4px;
+	background: var(--bubble);
+	color: var(--bubbletext);
+}
+
+/* Links */
+
+a {
+	color: var(--text);
+	text-decoration: underline wavy;
+	text-decoration-color: var(--rule);
+	text-underline-offset: 4px;
+}
+
+a:hover {
+	color: var(--accent);
+	text-decoration-color: var(--accent);
+}
+
+a:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}
+
+.header-anchor {
+	text-decoration: none;
+}
+
+/* Code */
+
+code {
+	padding: 1px 6px;
+	background: var(--code);
+	font-family: var(--font-mono);
+	font-size: 0.88em;
+}
+
+pre {
+	padding: 18px 20px;
+	background: var(--code);
+	font-size: 0.875rem;
+	line-height: 1.6;
+	overflow-x: auto;
+}
+
+pre code {
+	padding: 0;
+	background: none;
+	font-size: inherit;
+}
+
+/* Code block wrapper */
+
+div[class*="language-"] {
+	position: relative;
+	margin: 0 0 20px;
+	padding-top: 36px;
+	background: var(--code-block-bg);
+}
+
+div[class*="language-"] > pre {
+	margin: 0;
+	padding-top: 2px;
+	background: none;
+	color: var(--code-block-text);
+}
+
+div[class*="language-"] > .lang {
+	position: absolute;
+	top: 0;
+	left: 20px;
+	color: var(--code-block-muted);
+	font-size: 0.75rem;
+	font-weight: 600;
+	line-height: 36px;
+}
+
+div[class*="language-"] > .copy {
+	position: absolute;
+	top: 6px;
+	right: 8px;
+	padding: 5px 10px;
+	border: 0;
+	background: none;
+	color: var(--code-block-muted);
+	font-family: var(--font-sans);
+	font-size: 0.75rem;
+	font-weight: 600;
+	line-height: 1;
+	cursor: pointer;
+}
+
+div[class*="language-"] > .copy::before {
+	content: "copy";
+}
+
+div[class*="language-"] > .copy.copied::before {
+	content: "copied!";
+}
+
+div[class*="language-"] > .copy:hover,
+div[class*="language-"] > .copy.copied {
+	background: var(--bubble);
+	color: var(--bubbletext);
+}
+
+div[class*="language-"] > .copy:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}
+
+div[class*="language-"].line-numbers-mode > pre {
+	padding-left: 66px;
+}
+
+div[class*="language-"] > .line-numbers-wrapper {
+	position: absolute;
+	top: 36px;
+	bottom: 0;
+	left: 0;
+	width: 40px;
+	padding-top: 2px;
+	background: var(--code-block-bg);
+	color: var(--code-block-muted);
+	font-family: var(--font-mono);
+	font-size: 0.875rem;
+	line-height: 1.6;
+	text-align: right;
+	user-select: none;
+}
+
+div[class*="language-"] > pre > code {
+	display: block;
+	min-width: fit-content;
+}
+
+div[class*="language-"] .line.highlighted {
+	display: inline-block;
+	width: calc(100% + 40px);
+	margin: 0 -20px;
+	padding: 0 20px;
+	background: var(--code-block-highlight);
+}
+
+div[class*="language-"].line-numbers-mode .line.highlighted {
+	width: calc(100% + 86px);
+	margin-left: -66px;
+	padding-left: 66px;
+}
+
+/* Blocks */
+
+blockquote {
+	padding: 14px 20px;
+	border-radius: 6px 6px 6px 0;
+	background: var(--code);
+}
+
+blockquote > :last-child {
+	margin-bottom: 0;
+}
+
+figure:has(> blockquote) > blockquote {
+	margin: 0;
+}
+
+figure:has(> blockquote) > figcaption {
+	margin-top: 8px;
+	padding-left: 4px;
+	color: var(--muted);
+	font-size: 0.9375rem;
+}
+
+/* alerts (> [!NOTE] etc.), vitePress containers */
+
+.custom-block,
+details {
+	--block: var(--muted);
+	margin: 0 0 20px;
+	padding: 14px 20px;
+	background: color-mix(in srgb, var(--block) 12%, var(--bg));
+}
+
+.custom-block.note,
+.custom-block.info {
+	--block: var(--info);
+}
+
+.custom-block.tip {
+	--block: var(--tip);
+}
+
+.custom-block.important {
+	--block: var(--accent);
+}
+
+.custom-block.warning {
+	--block: var(--warning);
+}
+
+.custom-block.caution,
+.custom-block.danger {
+	--block: var(--danger);
+}
+
+details > :last-child,
+.custom-block > :last-child {
+	margin-bottom: 0;
+}
+
+.custom-block-title {
+	margin-bottom: 4px;
+	color: var(--block);
+	font-size: 0.8125rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+}
+
+details > summary {
+	color: var(--block);
+	font-weight: 700;
+	cursor: pointer;
+}
+
+details[open] > summary {
+	margin-bottom: 8px;
+}
+
+/* Tables */
+
+table {
+	display: block;
+	width: max-content;
+	max-width: 100%;
+	overflow-x: auto;
+	border-collapse: collapse;
+	background: var(--code);
+	font-size: 0.9375rem;
+	font-variant-numeric: tabular-nums;
+}
+
+table:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}
+
+th,
+td {
+	padding: 10px 16px;
+	border-bottom: 1px solid var(--rule);
+	text-align: left;
+}
+
+th {
+	color: var(--muted);
+	font-size: 0.8125rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	border-bottom-width: 2px;
+}
+
+tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
 }
