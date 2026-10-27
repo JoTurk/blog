@@ -6,6 +6,8 @@ import { createContentLoader, defineConfig } from 'vitepress'
 const hostname = 'https://joturk.net'
 const title = 'Jo Turk'
 const description = 'Personal blog'
+const license = 'https://creativecommons.org/licenses/by/4.0/'
+const feedPath = '/feed.xml'
 
 export default defineConfig({
 	title,
@@ -16,13 +18,14 @@ export default defineConfig({
 	sitemap: { hostname },
 	markdown: { theme: 'rose-pine-moon' },
 	head: [
+		['link', { rel: 'license', href: license }],
 		[
 			'link',
 			{
 				rel: 'alternate',
 				type: 'application/rss+xml',
 				title,
-				href: '/feed.rss',
+				href: feedPath,
 			},
 		],
 	],
@@ -34,8 +37,8 @@ export default defineConfig({
 			id: hostname,
 			link: hostname,
 			language: 'en',
-			copyright: `© ${new Date().getFullYear()} Jo Turk`,
-			feedLinks: { rss: `${hostname}/feed.rss` },
+			copyright: `© ${new Date().getFullYear()} Jo Turk, licensed under CC BY 4.0: ${license}`,
+			feedLinks: { rss: `${hostname}${feedPath}` },
 		})
 
 		const posts = await createContentLoader('posts/*.md', {
@@ -59,6 +62,6 @@ export default defineConfig({
 				})
 			})
 
-		writeFileSync(path.join(config.outDir, 'feed.rss'), feed.rss2())
+		writeFileSync(path.join(config.outDir, feedPath), feed.rss2())
 	},
 })
