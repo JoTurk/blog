@@ -14,6 +14,7 @@ export default defineConfig({
 	cleanUrls: true,
 	lastUpdated: true,
 	sitemap: { hostname },
+	markdown: { theme: 'rose-pine-moon' },
 	head: [
 		[
 			'link',
