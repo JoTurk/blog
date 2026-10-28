@@ -18,9 +18,8 @@
 	--code-block-muted: #908caa;
 	--code-block-highlight: #817c9c26;
 
-	--font-sans:
-		ui-rounded, "SF Pro Rounded", system-ui, -apple-system, sans-serif;
-	--font-mono: ui-monospace, Menlo, Consolas, monospace;
+	--font-sans: "Lexend Variable", system-ui, -apple-system, sans-serif;
+	--font-mono: "Maple Mono", ui-monospace, Menlo, Consolas, monospace;
 }
 
 *,
@@ -35,6 +34,7 @@ body {
 	color: var(--text);
 	font-family: var(--font-sans);
 	font-size: 1.0625rem;
+	font-weight: 300;
 	line-height: 1.7;
 	overflow-wrap: break-word;
 	-webkit-font-smoothing: antialiased;
@@ -137,6 +137,8 @@ code {
 	background: var(--code);
 	font-family: var(--font-mono);
 	font-size: 0.88em;
+	/* disable non-cursive italic l */
+	font-feature-settings: "cv35";
 }
 
 pre {
