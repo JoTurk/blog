@@ -1,9 +1,7 @@
 ---
-title: Hello, world
+title: Hello, world!
 date: 2026-10-27
 ---
-
-# Hello, world!
 
 Another blog, 17 years after my first one -- which 9-year-old me built using CUTTING-EDGE XSLT™ while pretending to "teach" PHP and WordPress hacks.
 
