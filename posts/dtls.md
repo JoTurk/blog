@@ -148,7 +148,8 @@ August 5 I got the first confirmation of DTLS 1.3 working in WebRTC against Chro
 hadn't slept for two days, and couldn't believe it. I'd written most of it without
 testing against another implementation lol.
 
-Our team's write-up has a line I really like: *"Finished" is a different story.* The
+[Our team's write-up](https://pion.ly/blog/dtls-one-three/#finished-is-a-different-story-in-1-3)
+has a line I really like: *"Finished" is a different story.* The
 handshake was just the beginning. August was more than a hundred commits: Connection
 IDs, KeyUpdate, HelloRetryRequest, SRTP negotiation, rewriting extension parsing, and
 a week deleting duplicated code that I badly underestimated.
@@ -471,7 +472,9 @@ epoch, which brings us to keys.
 
 ## Where keys come from
 
-As I wrote in the team's write-up: the names are scarier than the concepts. HKDF,
+As I wrote in [the team's
+write-up](https://pion.ly/blog/dtls-one-three/#the-names-are-scarier-than-the-concepts):
+the names are scarier than the concepts. HKDF,
 AEAD, transcript hash, epoch, each is a small idea with a scary name.
 
 TLS 1.3 doesn't use *a* key, it uses a whole family of keys, each derived from the
