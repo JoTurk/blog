@@ -374,6 +374,19 @@ Post-quantum crypto makes it worse. The post-quantum key share Pion sends by def
 is 1216 bytes on its own, so now even the first message of the handshake doesn't fit
 in one datagram.
 
+And of course that broke something. wolfSSL, which a lot of embedded devices run,
+wants the first ClientHello in a single datagram so it can answer without keeping any
+state, and [by default](https://github.com/wolfSSL/wolfssl/blob/b24278145e7a7f3999082b2d793b1febbe665d57/src/dtls.c#L45)
+it just won't take a fragmented one. Most people using pion/dtls directly are doing
+IoT, so that's the worst place to break. Raising the MTU doesn't help either, the
+ClientHello needs 1415 bytes and plenty of networks can't do that. So now Pion [sends
+an X25519 share next to the hybrid one](https://github.com/pion/dtls/pull/1289) like
+Go does, and clients [put plain X25519 first](https://github.com/pion/dtls/pull/1292)
+so the first ClientHello fits again. If the server wants post-quantum, it asks for it
+with a HelloRetryRequest, so we still get ML-KEM everywhere it's supported. Clients
+with early data keep ML-KEM first, because a retry throws the early data away. I kinda
+get the X25519MLKEM768 hate now :(
+
 **It assumes nobody repeats things.** Networks do occasionally duplicate packets, but
 TCP throws away bytes it already has, and if Mallory spliced an old record into the
 stream, TLS's silent counter would have moved on and it wouldn't decrypt. DTLS just
