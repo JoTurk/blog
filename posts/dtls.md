@@ -206,7 +206,7 @@ It's better to keep going and decide what's actually worth recovering.
 
 WebRTC, for example, has a few ways to do that on top of UDP. RTP numbers every
 packet, like the postcards above, so the receiver knows exactly what's missing. With
-**NACK**, it tells the sender which sequence numbers it lost and the sender resends
+[**NACK**](https://webrtcforthecurious.com/docs/05-real-time-networking/#negative-acknowledgments), it tells the sender which sequence numbers it lost and the sender resends
 just those. That costs at least one extra round trip, so when there's no time to wait
 there's **FEC** (forward error correction): the sender adds a few extra parity
 packets, and the receiver rebuilds a lost packet from them without asking for
