@@ -758,3 +758,5 @@ found out the hard way.
 And thank you for reading this far :) Now go break something.
 
 Come chat with us on the [Pion Discord](https://discord.gg/HuvXUrvxZ8) about anything.
+
+P.S. Everything went perfectly except one silly mistake: I forgot to wire the message hooks into DTLS 1.3 after refactoring the handshake messages, and one hook was left taking a 1.2-only type, so we had to break the API in [v4.0.1](https://github.com/pion/dtls/pull/1295), our very first patch a few minutes later after we tagged v4 :(
