@@ -100,7 +100,7 @@ Connection IDs too.
 I don't want to get paid for my work on Pion, because I don't want to treat it as a
 job. I also wanted people to build it with me. So I asked my friends who had already
 contributed to Pion, **Jade Kolos**, **Júlia Borges Paschoalinoto** and **Julia-Elena
-Roman**, and later **Jan Muska**, to join the NLnet-funded effort, and recommended
+Roman**, and later **Jan Muška**, to join the NLnet-funded effort, and recommended
 them to Theo. Then DTLS 1.3 was ours to finish :)
 
 We had DTLS 1.2 extension parsers that didn't really understand DTLS 1.3, and an
@@ -685,7 +685,7 @@ Chiu](https://www.linkedin.com/in/r-chiu-60b4381b9/), [Jade
 Kolos](https://www.linkedin.com/in/jade-kolos/), [Júlia Borges
 Paschoalinoto](https://www.linkedin.com/in/julia-paschoalinoto/en/), [Julia-Elena
 Roman](https://www.linkedin.com/in/julia-elena/) and [Jan
-Muska](https://www.linkedin.com/in/frantabot/). Thank you for all the reviews and
+Muška](https://www.linkedin.com/in/frantabot/). Thank you for all the reviews and
 testing, and sorry for how annoying I was about stuff I found cool :)
 
 Huge thanks to **[Thomas Legris](https://github.com/noboruma)**. He runs
