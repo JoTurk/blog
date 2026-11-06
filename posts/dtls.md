@@ -4,7 +4,6 @@ date: 2026-11-06
 description: The lore of how Pion got DTLS 1.3, and DTLS explained with interactive demos you can play with!
 image: /og/dtls.png
 imageAlt: How hard could implementing DTLS 1.3 possibly be?
-draft: true
 ---
 
 <script setup>
