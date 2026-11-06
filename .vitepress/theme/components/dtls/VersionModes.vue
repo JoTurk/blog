@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue'
 import type { AnimationName } from './characters'
 import DemoFrame from './DemoFrame.vue'
 import PixelSprite from './PixelSprite.vue'
@@ -186,7 +186,6 @@ const mood = reactive<Record<'client' | 'server' | 'mallory', AnimationName>>({
 const grid = ref<
 	Record<string, { kind: Kind; mallory: boolean; bug: boolean }>
 >({})
-const reducedMotion = ref(false)
 const STEP = 900
 let gen = 0
 let packets = 0
@@ -196,14 +195,11 @@ function later(run: number, ms: number, fn: () => void) {
 	const go = () => {
 		if (run === gen) fn()
 	}
-	if (reducedMotion.value) return go()
 	timers.push(setTimeout(go, ms))
 }
 
 function send(label: string, dir: Packet['dir'], tone: Packet['tone']) {
-	packet.value = reducedMotion.value
-		? undefined
-		: { id: ++packets, label, dir, tone }
+	packet.value = { id: ++packets, label, dir, tone }
 }
 
 function stop() {
@@ -306,21 +302,9 @@ function pick(c: Mode, s: Mode) {
 
 watch([clientMode, serverMode, mallory, bug], stop)
 
-let motionQuery: MediaQueryList | undefined
-function onMotionChange() {
-	reducedMotion.value = motionQuery?.matches ?? false
-}
-
-onMounted(() => {
-	motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-	motionQuery.addEventListener('change', onMotionChange)
-	onMotionChange()
-})
-
 onBeforeUnmount(() => {
 	gen++
 	for (const t of timers) clearTimeout(t)
-	motionQuery?.removeEventListener('change', onMotionChange)
 })
 
 // Rendering
@@ -1046,7 +1030,7 @@ const strippedNothing = computed(
 
 @media (prefers-reduced-motion: reduce) {
 	.packet {
-		animation: none;
+		animation-timing-function: steps(3, jump-both);
 	}
 }
 </style>

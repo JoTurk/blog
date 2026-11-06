@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import { computed, onBeforeUnmount, reactive, ref } from 'vue'
 import type { AnimationName } from './characters'
 import DemoFrame from './DemoFrame.vue'
 import PixelSprite from './PixelSprite.vue'
@@ -39,13 +39,12 @@ const pending = ref(0)
 const mood = reactive<
 	Record<'mallory' | 'server' | 'victim' | 'client', AnimationName>
 >({ mallory: 'idle', server: 'idle', victim: 'idle', client: 'idle' })
-const reducedMotion = ref(false)
 let ids = 0
 let ladderRun = 0
 let timers: ReturnType<typeof setTimeout>[] = []
 
 function later(ms: number, fn: () => void) {
-	if (ms <= 0 || reducedMotion.value) return fn()
+	if (ms <= 0) return fn()
 	const timer = setTimeout(() => {
 		timers = timers.filter((t) => t !== timer)
 		fn()
@@ -56,7 +55,6 @@ function later(ms: number, fn: () => void) {
 const reply = computed(() => (cookies.value ? HVR : FLIGHT))
 
 function dot(lane: Dot['lane'], big = false) {
-	if (reducedMotion.value) return
 	const d = { id: ids++, lane, big }
 	dots.value = [...dots.value, d]
 	later(TRIP, () => {
@@ -206,20 +204,8 @@ const stats = computed(() => [
 
 const roundTrips = computed(() => ladder.value.length / 2)
 
-let motionQuery: MediaQueryList | undefined
-function onMotionChange() {
-	reducedMotion.value = motionQuery?.matches ?? false
-}
-
-onMounted(() => {
-	motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-	motionQuery.addEventListener('change', onMotionChange)
-	onMotionChange()
-})
-
 onBeforeUnmount(() => {
 	for (const t of timers) clearTimeout(t)
-	motionQuery?.removeEventListener('change', onMotionChange)
 })
 </script>
 
@@ -695,7 +681,10 @@ onBeforeUnmount(() => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.dot,
+	.dot {
+		animation-timing-function: steps(3, jump-both);
+	}
+
 	.ladder li {
 		animation: none;
 	}

@@ -642,5 +642,12 @@ const overhead = computed(() => chips.value.length * OVERHEAD)
 	.packet {
 		transition: none;
 	}
+
+	.packet.dropped {
+		opacity: 0.5;
+		transform: translate(-50%, -50%);
+		border-style: dashed;
+		text-decoration: line-through;
+	}
 }
 </style>

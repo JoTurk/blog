@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import { computed, onBeforeUnmount, reactive, ref } from 'vue'
 import type { AnimationName } from './characters'
 import DemoFrame from './DemoFrame.vue'
 import PixelSprite from './PixelSprite.vue'
@@ -41,7 +41,6 @@ const mood = reactive<Record<'client' | 'server' | 'mallory', AnimationName>>({
 	server: 'idle',
 	mallory: 'idle',
 })
-const reducedMotion = ref(false)
 let ids = 0
 let moodId = 0
 let timers: ReturnType<typeof setTimeout>[] = []
@@ -140,10 +139,9 @@ function send(seq: number, from: Sender, authentic = true, delay = 0) {
 	later(delay, () => {
 		if (from === 'client') mood.client = 'send'
 		else mood.mallory = 'sneak'
-		const travel = reducedMotion.value ? 0 : FLY
 		const flight = { id: ids++, seq, from }
-		if (travel) flying.value = [...flying.value, flight]
-		later(travel, () => {
+		flying.value = [...flying.value, flight]
+		later(FLY, () => {
 			flying.value = flying.value.filter((f) => f.id !== flight.id)
 			receive(seq, from, authentic)
 			if (!flying.value.some((f) => f.from === from)) {
@@ -162,7 +160,7 @@ function shuffled() {
 	nextSeq.value += 4
 	const order = [base + 2, base, base + 3, base + 1]
 	order.forEach((seq, i) => {
-		send(seq, 'client', true, i * (reducedMotion.value ? 0 : 260))
+		send(seq, 'client', true, i * 260)
 	})
 }
 
@@ -236,20 +234,8 @@ const clientBroken = computed(
 
 const percent = (cells: number) => (cells / CELLS) * 100
 
-let motionQuery: MediaQueryList | undefined
-function onMotionChange() {
-	reducedMotion.value = motionQuery?.matches ?? false
-}
-
-onMounted(() => {
-	motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-	motionQuery.addEventListener('change', onMotionChange)
-	onMotionChange()
-})
-
 onBeforeUnmount(() => {
 	for (const t of timers) clearTimeout(t)
-	motionQuery?.removeEventListener('change', onMotionChange)
 })
 </script>
 
@@ -312,7 +298,7 @@ onBeforeUnmount(() => {
 			<span class="demo-mono">window {{ low }}–{{ top }}</span>
 			<span>new</span>
 		</div>
-		<div class="strip" :class="{ still: reducedMotion }">
+		<div class="strip">
 			<button
 				v-for="c of cells"
 				:key="c.seq"
@@ -479,10 +465,6 @@ onBeforeUnmount(() => {
 	transition: transform 0.35s ease;
 }
 
-.strip.still .cell {
-	transition: none;
-}
-
 .cell span {
 	display: block;
 	height: 100%;
@@ -630,6 +612,10 @@ onBeforeUnmount(() => {
 }
 
 @media (prefers-reduced-motion: reduce) {
+	.packet {
+		animation-timing-function: steps(3, jump-both);
+	}
+
 	.cell,
 	.cell span {
 		transition: none;
