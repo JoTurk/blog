@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<title>Jo Turk</title>
+<rect width="32" height="32" rx="7" fill="#1c181b"/>
+<path fill="#ff9cc4" stroke="#ff9cc4" stroke-linejoin="round" stroke-width="1.5" d="M5.5 17.5 7 5l7 6h4l7-6 1.5 12.5c0 5.8-4.7 9.5-10.5 9.5S5.5 23.3 5.5 17.5z"/>
+<ellipse cx="11.6" cy="17.6" rx="1.7" ry="2.1" fill="#1c181b"/>
+<ellipse cx="20.4" cy="17.6" rx="1.7" ry="2.1" fill="#1c181b"/>
+<ellipse cx="9" cy="21.6" rx="2" ry="1.2" fill="#ff6aa6"/>
+<ellipse cx="23" cy="21.6" rx="2" ry="1.2" fill="#ff6aa6"/>
+</svg>
