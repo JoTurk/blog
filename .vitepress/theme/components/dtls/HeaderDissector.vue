@@ -222,26 +222,36 @@ const headerParts = computed(() => {
 	return parts
 })
 
-const notes = computed(() => {
+function notesFor(
+	withCid: boolean,
+	long: boolean,
+	withLength: boolean,
+	e: number,
+) {
 	const out: string[] = []
-	if (cid.value)
+	if (withCid)
 		out.push(
 			'Connection ID: the server finds your session by this, not your IP and port, so it survives a network switch.',
 		)
 	out.push(
-		seq16.value
+		long
 			? 'Sequence number: only the low 16 bits are sent. The receiver rebuilds the full number from the ones it has seen.'
 			: 'Sequence number: only the low 8 bits. Fine for slow streams, and saves a byte on every packet.',
 	)
-	if (!hasLength.value)
+	if (!withLength)
 		out.push(
 			'No length: the record runs to the end of the datagram, so it has to be the last record in it.',
 		)
 	out.push(
-		`Epoch ${epoch.value}: only the low two bits (${(epoch.value & 3).toString(2).padStart(2, '0')}) travel. ${epoch.value === 3 ? 'Epoch 3 is application data.' : epoch.value === 2 ? 'Epoch 2 is the encrypted handshake.' : epoch.value === 1 ? 'Epoch 1 is 0-RTT early data.' : 'Epoch 4 and up come after each KeyUpdate.'}`,
+		`Epoch ${e}: only the low two bits (${(e & 3).toString(2).padStart(2, '0')}) travel. ${e === 3 ? 'Epoch 3 is application data.' : e === 2 ? 'Epoch 2 is the encrypted handshake.' : e === 1 ? 'Epoch 1 is 0-RTT early data.' : 'Epoch 4 and up come after each KeyUpdate.'}`,
 	)
 	return out
-})
+}
+
+const notes = computed(() =>
+	notesFor(cid.value, seq16.value, hasLength.value, epoch.value),
+)
+const roomiest = notesFor(true, true, false, 4)
 
 const malloryMood = computed(() =>
 	history.value.length >= 3 ? 'sad' : 'sneak',
@@ -386,9 +396,14 @@ function fmt(bytes: Uint8Array | undefined, n = 16) {
 				</div>
 			</div>
 
-			<ul class="notes">
-				<li v-for="n of notes" :key="n">{{ n }}</li>
-			</ul>
+			<div class="notes-wrap">
+				<ul class="notes">
+					<li v-for="n of notes" :key="n">{{ n }}</li>
+				</ul>
+				<ul class="notes ghost" aria-hidden="true">
+					<li v-for="n of roomiest" :key="n">{{ n }}</li>
+				</ul>
+			</div>
 
 			<div v-if="mallory" class="mallory">
 				<div class="mallory-head">
@@ -692,6 +707,18 @@ button.field {
 
 .notes li + li {
 	margin-top: 4px;
+}
+
+.notes-wrap {
+	display: grid;
+}
+
+.notes-wrap > .notes {
+	grid-area: 1 / 1;
+}
+
+.notes.ghost {
+	visibility: hidden;
 }
 
 .mallory {

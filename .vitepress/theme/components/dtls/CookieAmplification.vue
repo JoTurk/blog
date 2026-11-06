@@ -34,6 +34,7 @@ const answered = ref(0)
 const dots = ref<Dot[]>([])
 const last = ref('')
 const ladder = ref<Step[]>([])
+const ladderShown = ref(0)
 const ladderDone = ref(false)
 const pending = ref(0)
 const mood = reactive<
@@ -123,13 +124,14 @@ function realClient() {
 				{ dir: 'down', what: 'ServerHello, certificates…', bytes: FLIGHT },
 			]
 	const run = ++ladderRun
-	ladder.value = []
+	ladder.value = steps
+	ladderShown.value = 0
 	ladderDone.value = false
 	mood.client = 'send'
-	steps.forEach((step, i) => {
+	steps.forEach((_, i) => {
 		later(i * 700, () => {
 			if (run !== ladderRun) return
-			ladder.value = [...ladder.value, step]
+			ladderShown.value = i + 1
 			if (i === steps.length - 1) {
 				ladderDone.value = true
 				mood.client = 'yay'
@@ -323,7 +325,11 @@ onBeforeUnmount(() => {
 				a real client connects
 			</p>
 			<ol>
-				<li v-for="(s, i) of ladder" :key="i" :class="s.dir">
+				<li
+					v-for="(s, i) of ladder"
+					:key="i"
+					:class="[s.dir, { pending: i >= ladderShown }]"
+				>
 					<span class="end">client</span>
 					<span class="msg">
 						<span class="demo-mono"
@@ -336,7 +342,7 @@ onBeforeUnmount(() => {
 					<span class="end">server</span>
 				</li>
 			</ol>
-			<p v-if="ladderDone" class="demo-note">
+			<p class="demo-note" :class="{ pending: !ladderDone }">
 				<template v-if="cookies">
 					<span class="demo-warn">{{ roundTrips }} round trips.</span> One
 					extra, the price of the defence. DTLS 1.3 does the same with a
@@ -593,6 +599,11 @@ onBeforeUnmount(() => {
 	margin: 0;
 	padding: 0;
 	list-style: none;
+}
+
+.ladder .pending {
+	visibility: hidden;
+	animation: none;
 }
 
 .ladder li {

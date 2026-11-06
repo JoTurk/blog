@@ -101,33 +101,29 @@ const tampered = computed(
 	() => action.value === 'amount' || action.value === 'tag',
 )
 
-const body = computed(() => {
+function bodyFor(next: Action) {
 	const bytes = original.value
-	if (!bytes) return undefined
-	if (!tampered.value) return bytes
+	if (!bytes || (next !== 'amount' && next !== 'tag')) return bytes
 	const out = bytes.slice()
 	MASK.forEach((m, i) => {
 		out[AT + i] ^= m
 	})
 	return out
-})
+}
+
+const body = computed(() => bodyFor(action.value))
 
 const tag = computed(() =>
 	action.value === 'tag' ? forgedTag.value : sealed.value?.tag,
 )
 
-async function deliver() {
-	const run = ++delivering
-	const bytes = body.value
+async function deliver(
+	bytes: Uint8Array<ArrayBuffer>,
+	tagBytes?: Uint8Array<ArrayBuffer>,
+) {
 	const keys = sealed.value
-	received.value = undefined
-	if (!bytes) return
-	if (mode.value === 'plain') {
-		received.value = new TextDecoder().decode(bytes)
-		return
-	}
-	if (!keys) return
-	let result: string | null
+	if (mode.value === 'plain') return new TextDecoder().decode(bytes)
+	if (!keys) return undefined
 	try {
 		const out =
 			mode.value === 'ctr'
@@ -139,22 +135,31 @@ async function deliver() {
 				: await crypto.subtle.decrypt(
 						{ name: 'AES-GCM', iv: keys.iv },
 						gcmKey as CryptoKey,
-						new Uint8Array([...bytes, ...(tag.value ?? [])]),
+						new Uint8Array([...bytes, ...(tagBytes ?? [])]),
 					)
-		result = new TextDecoder().decode(out)
+		return new TextDecoder().decode(out)
 	} catch {
-		result = null
+		return null
 	}
-	if (run === delivering) received.value = result
 }
 
-function act(next: Action) {
-	if (!body.value) return
-	if (next === 'tag')
-		forgedTag.value = crypto.getRandomValues(new Uint8Array(16))
+async function act(next: Action) {
+	const bytes = bodyFor(next)
+	if (!bytes) return
+	const run = ++delivering
+	const forged =
+		next === 'tag'
+			? crypto.getRandomValues(new Uint8Array(16))
+			: forgedTag.value
+	const result = await deliver(
+		bytes,
+		next === 'tag' ? forged : sealed.value?.tag,
+	)
+	if (run !== delivering) return
+	forgedTag.value = forged
 	action.value = next
 	reading.value = false
-	deliver()
+	received.value = result
 }
 
 function read() {
@@ -166,7 +171,6 @@ async function resend() {
 	action.value = 'none'
 	reading.value = false
 	received.value = undefined
-	if (ctrKey) sealed.value = undefined
 	packetId.value++
 	await seal()
 }
@@ -225,8 +229,8 @@ const verdict = computed(() => {
 
 const xorRows = computed(() => {
 	const before = original.value?.slice(AT, AT + 2)
-	const after = body.value?.slice(AT, AT + 2)
-	if (!before || !after) return undefined
+	if (!before) return undefined
+	const after = before.map((b, i) => b ^ MASK[i])
 	const fmt = (b: Uint8Array) => [...b].map(hex).join(' ')
 	return {
 		from: fmt(FROM),
@@ -332,8 +336,9 @@ const xorRows = computed(() => {
 		</section>
 
 		<section
-			v-if="tampered && mode !== 'plain' && xorRows"
+			v-if="mode !== 'plain' && xorRows"
 			class="panel xor"
+			:class="{ idle: !tampered }"
 			aria-label="Mallory's bit flip"
 		>
 			<p class="panel-head">Mallory’s bit flip <span>(no key needed)</span></p>
@@ -351,9 +356,8 @@ const xorRows = computed(() => {
 				the same plaintext bit.
 			</p>
 			<p v-else class="demo-note">
-				Same flip, but the tag was computed over the original bytes{{
-					action === 'tag' ? ', and guessing a 128-bit tag is hopeless' : ''
-				}}.
+				Same flip, but the tag was computed over the original bytes, and
+				guessing a 128-bit tag is hopeless.
 			</p>
 		</section>
 
@@ -541,6 +545,10 @@ const xorRows = computed(() => {
 	color: var(--muted);
 }
 
+.xor.idle {
+	opacity: 0.4;
+}
+
 .xor dl {
 	display: grid;
 	grid-template-columns: max-content 1fr;
@@ -587,6 +595,10 @@ const xorRows = computed(() => {
 
 	.xor dd + dt {
 		margin-top: 6px;
+	}
+
+	.outcome {
+		min-height: calc(2lh + 4px);
 	}
 }
 

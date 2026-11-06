@@ -554,7 +554,7 @@ onBeforeUnmount(() => {
 	display: flex;
 	flex-direction: column;
 	gap: 2px;
-	min-height: 7.5em;
+	min-height: 9em;
 	margin: 12px 0 0;
 	padding: 8px 10px;
 	border-radius: 0;
@@ -608,6 +608,10 @@ onBeforeUnmount(() => {
 	.who,
 	.seq {
 		min-width: 0;
+	}
+
+	.log {
+		min-height: 16em;
 	}
 }
 

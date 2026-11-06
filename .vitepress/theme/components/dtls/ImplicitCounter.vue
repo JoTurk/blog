@@ -526,7 +526,7 @@ function status(l: Lane) {
 	gap: 12px;
 	align-items: flex-start;
 	margin-top: 6px;
-	min-height: 32px;
+	min-height: 43px;
 }
 
 .label {
