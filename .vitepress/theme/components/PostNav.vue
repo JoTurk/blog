@@ -8,7 +8,7 @@ defineProps<{ older?: Post; newer?: Post }>()
 	<nav class="post-nav" aria-label="More posts">
 		<a v-if="older" :href="older.url">
 			<span class="label">← older</span>
-			<span class="title">{{ older.title }}</span>
+			<span class="title">{{ older.title }}<span v-if="older.external" class="ext"> ↗</span></span>
 		</a>
 		<div v-else>
 			<span class="label">← older</span>
@@ -16,7 +16,7 @@ defineProps<{ older?: Post; newer?: Post }>()
 		</div>
 		<a v-if="newer" class="right" :href="newer.url">
 			<span class="label">newer →</span>
-			<span class="title">{{ newer.title }}</span>
+			<span class="title">{{ newer.title }}<span v-if="newer.external" class="ext"> ↗</span></span>
 		</a>
 		<div v-else class="right">
 			<span class="label">newer →</span>
@@ -67,5 +67,11 @@ a:hover .title {
 
 .none {
 	color: var(--muted);
+}
+
+.ext {
+	color: var(--muted);
+	font-size: 0.8125rem;
+	font-weight: 400;
 }
 </style>

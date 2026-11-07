@@ -19,7 +19,7 @@ const years = computed(() => {
 		<div v-for="[year, yearPosts] of years" :key="year" class="year">
 			<h3>{{ year }}</h3>
 			<a v-for="post of yearPosts" :key="post.url" class="row" :href="post.url">
-				<span class="title">{{ post.title }}</span>
+				<span class="title">{{ post.title }}<span v-if="post.external" class="ext"> ↗ pion.ly</span></span>
 				<span class="leader" aria-hidden="true"></span>
 				<time :datetime="post.date">{{
 					formatDate(post.date, { month: 'short', day: '2-digit' })
@@ -88,5 +88,11 @@ time {
 
 .row:hover .leader {
 	border-color: var(--accent);
+}
+
+.ext {
+	color: var(--muted);
+	font-size: 0.8125rem;
+	font-weight: 400;
 }
 </style>

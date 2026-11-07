@@ -14,10 +14,12 @@ const { page, frontmatter } = useData()
 const isHome = computed(() => frontmatter.value.layout === 'home')
 const isPost = computed(() => page.value.relativePath.startsWith('posts/'))
 
-const index = computed(() =>
-	posts.findIndex((p) => `${p.url}.md` === `/${page.value.relativePath}`),
-)
-const post = computed(() => posts[index.value])
+const isCurrent = (p: (typeof posts)[number]) =>
+	`${p.url}.md` === `/${page.value.relativePath}`
+// Posts with `hideNav: true` are skipped in the older/newer links.
+const navPosts = computed(() => posts.filter((p) => !p.hideNav || isCurrent(p)))
+const index = computed(() => navPosts.value.findIndex(isCurrent))
+const post = computed(() => navPosts.value[index.value])
 </script>
 
 <template>
@@ -38,8 +40,8 @@ const post = computed(() => posts[index.value])
 			</main>
 			<PostNav
 				v-if="isPost && post"
-				:older="posts[index + 1]"
-				:newer="posts[index - 1]"
+				:older="navPosts[index + 1]"
+				:newer="navPosts[index - 1]"
 			/>
 		</template>
 		<SiteFooter :links="!isHome" />
