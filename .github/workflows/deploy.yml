@@ -29,6 +29,11 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: github-profile
+          path: .vitepress/dist/github-profile.md
+          if-no-files-found: error
       - uses: actions/upload-pages-artifact@v5
         with:
           path: .vitepress/dist
@@ -42,3 +47,43 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v5
+
+  profile:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check profile sync configuration
+        id: config
+        env:
+          PROFILE_TOKEN: ${{ secrets.PROFILE_TOKEN }}
+        run: |
+          if [ -n "$PROFILE_TOKEN" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Profile sync skipped: add the PROFILE_TOKEN repository secret to enable it." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/download-artifact@v4
+        if: steps.config.outputs.enabled == 'true'
+        with:
+          name: github-profile
+          path: generated
+      - uses: actions/checkout@v7
+        if: steps.config.outputs.enabled == 'true'
+        with:
+          repository: JoTurk/JoTurk
+          token: ${{ secrets.PROFILE_TOKEN }}
+          path: profile
+      - name: Update profile README
+        if: steps.config.outputs.enabled == 'true'
+        working-directory: profile
+        run: |
+          cp ../generated/github-profile.md README.md
+          git add README.md
+          if git diff --cached --quiet; then
+            echo "Profile README is already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update profile from blog"
+          git push

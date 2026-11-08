@@ -2,6 +2,8 @@ import { writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { Feed } from 'feed'
 import { createContentLoader, defineConfig, type HeadConfig } from 'vitepress'
+import externalPosts from '../posts/external.json'
+import { renderProfile } from './profile'
 
 const hostname = 'https://joturk.net'
 const title = 'Jo Turk'
@@ -122,5 +124,20 @@ export default defineConfig({
 			})
 
 		writeFileSync(path.join(config.outDir, feedPath), feed.rss2())
+		writeFileSync(
+			path.join(config.outDir, 'github-profile.md'),
+			renderProfile(hostname, [
+				...posts
+					.filter(
+						(post) => !post.frontmatter.draft && !post.frontmatter.hideNav,
+					)
+					.map(({ url, frontmatter }) => ({
+						url,
+						title: frontmatter.title,
+						date: frontmatter.date,
+					})),
+				...externalPosts,
+			]),
+		)
 	},
 })

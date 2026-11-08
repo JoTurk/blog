@@ -1,9 +1,10 @@
+<script setup lang="ts">
+import { profile } from '../../profile'
+</script>
+
 <template>
 	<nav class="links" aria-label="Links">
-		<a href="https://github.com/JoTurk">github</a>
-		<a href="https://bsky.app/profile/joturk.net">bluesky</a>
-		<a href="https://www.linkedin.com/in/joturk/">linkedin</a>
-		<a href="mailto:jo@joturk.net">email</a>
+		<a v-for="link in profile.links" :key="link.label" :href="link.url">{{ link.label }}</a>
 	</nav>
 </template>
 

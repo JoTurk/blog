@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { profile } from '../../profile'
 import SiteLinks from './SiteLinks.vue'
 </script>
 
@@ -8,7 +9,7 @@ import SiteLinks from './SiteLinks.vue'
 			<img class="avatar" src="https://avatars.githubusercontent.com/u/7750446" alt="My github PFP!" width="80" height="80" />
 		</div>
 		<p class="intro">
-			I'm Jo Turk (She / Her), I work with media, network-transports and real-time, and help maintain a few open-source libraries.
+			{{ profile.bio }}
 		</p>
 		<SiteLinks />
 	</header>
