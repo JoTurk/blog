@@ -8,6 +8,7 @@ import PostList from './components/PostList.vue'
 import PostNav from './components/PostNav.vue'
 import SiteFooter from './components/SiteFooter.vue'
 import SiteNav from './components/SiteNav.vue'
+import ScrollBar from './ScrollBar.vue'
 
 const { page, frontmatter } = useData()
 
@@ -45,6 +46,7 @@ const post = computed(() => navPosts.value[index.value])
 			/>
 		</template>
 		<SiteFooter :links="!isHome" />
+		<ScrollBar />
 	</div>
 </template>
 
