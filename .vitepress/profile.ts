@@ -1,6 +1,6 @@
 export const profile = {
 	name: 'Jo Turk',
-	bio: "I'm Jo Turk (She / Her), I work with media, network-transports and real-time, and help maintain a few open-source libraries.",
+	bio: "I'm Jo Turk, I work with media, network-transports and real-time, and help maintain a few open-source libraries.",
 	links: [
 		{ label: 'github', url: 'https://github.com/JoTurk' },
 		{ label: 'bluesky', url: 'https://bsky.app/profile/joturk.net' },
